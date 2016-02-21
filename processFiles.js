@@ -10,9 +10,10 @@ var select = xpath.useNamespaces({"pp": "http://www.thalesgroup.com/rtti/PushPor
 
 var lineReader = require('line-reader');
 
-var datafile = 'data/testfile'
+var datafile = 'data/pPortData.log.2016-02-21-02-24'
 
 var insertCount = 0
+var processedCount = 0
 
 mongoClient.connect(url, function (err, db) {
 
@@ -29,11 +30,11 @@ mongoClient.connect(url, function (err, db) {
 //            console.log(line)
             persistData(collection, line)
         }).then(function() {
-                console.log('lineCount=' + lineCount + ' / insertCount=' + insertCount)
-                db.close()
+                console.log('lineCount=' + lineCount + ' / insertCount=' + insertCount + ' / processedCount=' + processedCount)
                 return true;
         }).then(function() {
             console.log('extra promise')
+            db.close()
             return true
         }).catch(function(err) {
             console.error(err)
@@ -65,7 +66,6 @@ var persistData = function(collection, xml) {
         insertCount++;
         console.log(insertCount + ' : ' + schedule)
 
-        /*
         collection.insert(schedule, function(err,res) {
             if(err) {
                 console.log('error: ' + err)
@@ -73,8 +73,9 @@ var persistData = function(collection, xml) {
             else {
 
             }
-        }); */
+        });
     }
+    processedCount++
 }
 
 
